@@ -74,8 +74,12 @@ def get_epochs_from_session_id_st_en(session_id, start, end):
   year, month, day, hour, mins, secs = session_id_fname.split("_")[0].split("-")
   sid_dt = datetime(
       int(year), int(month), int(day), int(hour), int(mins), int(secs))
-  start_epoch = int((sid_dt + timedelta(seconds=start/1000)).strftime("%s"))
-  end_epoch = int((sid_dt + timedelta(seconds=end/1000)).strftime("%s"))
+  # start_epoch = string((sid_dt + timedelta(seconds=start/1000)).strftime("%s"))
+  # end_epoch = string((sid_dt + timedelta(seconds=end/1000)).strftime("%s"))
+  start_epoch = sid_dt + timedelta(seconds=start/1000)
+  start_epoch = start_epoch.strftime("%S")
+  end_epoch = sid_dt + timedelta(seconds=end/1000)
+  end_epoch = end_epoch.strftime("%S")
   return start_epoch, end_epoch
 
 def get_epochs_from_iso_timestamps_lst(iso_ts_lst):
@@ -95,7 +99,7 @@ def get_epochs_from_iso_timestamps_lst(iso_ts_lst):
   length = len(iso_ts_lst)
   iso_epoch_arr =  np.zeros(length)
   for i in range(length):
-    iso_epoch_arr[i] = int(dp.parse(iso_ts_lst[i][:-6]).strftime("%s"))
+    iso_epoch_arr[i] = int(dp.parse(iso_ts_lst[i][:-6]).strftime("%S"))
 
   return iso_epoch_arr
 
@@ -158,6 +162,8 @@ def get_can_bus_corresponding_to_session_id_st_en_dict(session_id, start, end,
 
     can_param_dict = {}
     for col in csv_df.columns[2:]:
+      clip_st_epoch = float(clip_st_epoch)
+      clip_en_epoch = float(clip_en_epoch)
       can_param_dict[col] = csv_df[(csv_df["iso_timestamp"] >= clip_st_epoch) &
           (csv_df["iso_timestamp"] <= clip_en_epoch)][col].tolist()
     can_bus_values_dict[file_name.split(".")[0]] = can_param_dict

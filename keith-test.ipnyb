@@ -1,0 +1,23 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def markov(initstate, probmatrix, maxtime,x,y1,y2,y3):
+    prevstate = initstate
+    for i in range(maxtime):
+        nextstate = np.dot(probmatrix, prevstate)
+        prevstate = nextstate
+        y1.append(nextstate[0])
+        y2.append(nextstate[1])
+        y3.append(nextstate[2])
+        x.append(i)
+    return prevstate
+
+def main():
+    probmatrix = np.array([(0.8, 0.2, 0.1),(0.1,0.7,0.3),(0.1,0.1,0.6)])
+    initstate = np.array([0.4, 0.24,0.36])
+
+    val = markov(initstate, probmatrix,100,x,y1,y2,y3)
+    print(val)
+    
+if __name__ == "__main__":
+    main()
